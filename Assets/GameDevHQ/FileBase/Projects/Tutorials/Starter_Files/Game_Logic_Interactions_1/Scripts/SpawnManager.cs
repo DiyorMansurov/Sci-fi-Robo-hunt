@@ -14,6 +14,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private float _minimumSpeed = 3.5f;
     [SerializeField] private float _maximumSpeed = 7f;
 
+    [SerializeField] private int _enemiesLeft = 10;
+
     private float _timer;
 
     public static SpawnManager Instance;
@@ -21,6 +23,8 @@ public class SpawnManager : MonoBehaviour
 
     private void Awake() {
         Instance = this;
+
+        UIManager.Instance.UpdateEnemies(_enemiesLeft);
     }
     private void Update() {
         _timer += Time.deltaTime;
@@ -38,8 +42,12 @@ public class SpawnManager : MonoBehaviour
     }
     private void SpawnEnemy()
     {
+        if (_enemiesLeft <= 0) return;
         Enemy enemy = _pool.GetEnemy();
         enemy.Init(_startPoint.position, _pool, _endPoint.position);
+        
+        _enemiesLeft -= 1;
+        UIManager.Instance.UpdateEnemies(_enemiesLeft);
     }
 
 }

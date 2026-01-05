@@ -22,6 +22,8 @@ public class Enemy : MonoBehaviour
     private Transform _lookTarget;
     private float _waitingTime;
     private bool _hiddenAlready = false;
+    private bool _isDead = false;
+
 
     void Awake()
     {
@@ -39,6 +41,7 @@ public class Enemy : MonoBehaviour
         // {
         //     _currentState = States.Death; 
         // }
+        if (_isDead) return; 
 
         switch (_currentState)
         {
@@ -70,12 +73,16 @@ public class Enemy : MonoBehaviour
 
     private void RunningBehaviour()
     {
+        if (_isDead || !_agent.enabled) return;
+
         _agent.updateRotation = true;
         _agent.destination = _endPoint;
     }
 
     private void CoverSpotDetection()
     {
+        if (_isDead || !_agent.enabled) return; 
+
         float distance = Vector3.Distance(this.transform.position, _coverPoint);
 
         if (distance < 6f && !_hiddenAlready)
@@ -86,6 +93,7 @@ public class Enemy : MonoBehaviour
     }
     private void HidingBehaviour()
     {
+        if (_isDead || !_agent.enabled) return; 
         
         if (_waitingTime > 0f)
         {
@@ -103,7 +111,33 @@ public class Enemy : MonoBehaviour
         }
         
     }
-    private void DeathBehaviour(){}
+    private void DeathBehaviour()
+    {
+        if (_isDead) return;
+
+        _isDead = true;
+
+        _agent.isStopped = true;
+        _agent.enabled = false;
+
+        _animator.SetBool("Hiding", false);
+        _animator.SetTrigger("Death");
+
+        StartCoroutine(WaitandReturn());
+    }
+
+    IEnumerator WaitandReturn()
+    {
+        yield return new WaitForSeconds(6f);
+        ReturnToPool();
+        _hiddenAlready = true;
+    }
+
+    public void EnemyHit()
+    {
+        if (_isDead) return;
+        _currentState = States.Death;
+    }
 
     private void RotateTowardsTarget()
     {
