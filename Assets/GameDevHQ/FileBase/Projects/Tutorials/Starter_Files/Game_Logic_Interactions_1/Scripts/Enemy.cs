@@ -14,6 +14,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private States _currentState = States.Running;
     [SerializeField] private AudioSource _death_SFX;
 
+    
+    [SerializeField] private GameObject _redLight;
+
     private NavMeshAgent _agent;
     private EnemyPool _pool;
     private Vector3 _startPoint;
@@ -64,6 +67,7 @@ public class Enemy : MonoBehaviour
         _coverPoint = CoverManager.Instance.GetRandomCoverPoint();
 
         gameObject.SetActive(true);
+        _redLight.SetActive(true);
         _agent.enabled = true;
         _isDead = false;
         _hiddenAlready = false;
@@ -130,6 +134,8 @@ public class Enemy : MonoBehaviour
 
         _animator.SetBool("Hiding", false);
         _animator.SetTrigger("Death");
+
+        _redLight.SetActive(false);
 
         StartCoroutine(WaitandReturn());
     }

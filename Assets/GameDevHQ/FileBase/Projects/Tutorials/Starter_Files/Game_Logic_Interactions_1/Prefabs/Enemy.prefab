@@ -1993,6 +1993,7 @@ GameObject:
   - component: {fileID: 801191643581959040}
   - component: {fileID: 6838439469308429920}
   - component: {fileID: 6970163552023024479}
+  - component: {fileID: 7332764263219681114}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Enemy
@@ -2075,6 +2076,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _currentState: 0
   _death_SFX: {fileID: 6970163552023024479}
+  _redLight: {fileID: 733781188}
   _isDead: 0
 --- !u!65 &6838439469308429920
 BoxCollider:
@@ -2185,6 +2187,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!54 &7332764263219681114
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801191644433543505}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &801191644433543507
 GameObject:
   m_ObjectHideFlags: 0
