@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour
         Death
     }
 
-    private States _currentState = States.Running;
+    [SerializeField] private States _currentState = States.Running;
 
     private NavMeshAgent _agent;
     private EnemyPool _pool;
@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour
     private Transform _lookTarget;
     private float _waitingTime;
     private bool _hiddenAlready = false;
-    private bool _isDead = false;
+    [SerializeField] private bool _isDead = false;
 
 
     void Awake()
@@ -64,6 +64,10 @@ public class Enemy : MonoBehaviour
 
         gameObject.SetActive(true);
         _agent.enabled = true;
+        _isDead = false;
+        _hiddenAlready = false;
+        _currentState = States.Running;
+        gameObject.tag = "Enemy";
         _animator.SetFloat("Speed", _agent.speed);
         transform.position = _startPoint;
         _agent.destination = _endPoint; 
@@ -156,6 +160,7 @@ public class Enemy : MonoBehaviour
 
     private void ReturnToPool()
     {
+        
         gameObject.SetActive(false);
         _pool.ReturnEnemyToPool(this);
         _agent.enabled = false;

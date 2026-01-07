@@ -12,6 +12,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text  _enemiesText;
     [SerializeField] private TMP_Text  _scoreText;
 
+    [SerializeField] private TMP_Text  _timerText;
+
     public static UIManager Instance;
     private void Awake() {
         Instance = this;
@@ -36,6 +38,13 @@ public class UIManager : MonoBehaviour
         _scoreAmount = amount;
     }
 
+    public void UpdateTimer(float _timeRemaining)
+    {
+        int Minutes = Mathf.FloorToInt(_timeRemaining / 60f);
+        int Seconds = Mathf.FloorToInt(_timeRemaining % 60f);
+
+        _timerText.text = $"{Minutes}:{Seconds:D2}";
+    }
     
 
 }

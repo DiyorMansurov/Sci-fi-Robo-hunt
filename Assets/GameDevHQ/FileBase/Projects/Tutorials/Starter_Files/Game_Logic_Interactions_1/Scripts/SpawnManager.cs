@@ -11,10 +11,13 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private Transform _startPoint;
     [SerializeField] private Transform _endPoint;
 
-    [SerializeField] private float _minimumSpeed = 3.5f;
-    [SerializeField] private float _maximumSpeed = 7f;
+    [SerializeField] private float _minimumSpeed = 5f;
+    [SerializeField] private float _maximumSpeed = 10f;
 
-    [SerializeField] private int _enemiesLeft = 10;
+    [SerializeField] private int _minAmountSpawning = 1;
+    [SerializeField] private int _maxAmountSpawning = 5;
+
+    [SerializeField] private int _enemiesLeft = 50;
 
     private float _timer;
 
@@ -32,8 +35,17 @@ public class SpawnManager : MonoBehaviour
         if (_timer >= _spawnDelay)
         {
             _timer = 0f;
-            SpawnEnemy();
+
+            for (int i = 0; i < RandomSpawningAmout(); i++)
+            {
+                SpawnEnemy();
+            }
         }
+    }
+
+    private float RandomSpawningAmout()
+    {
+        return Random.Range(_minAmountSpawning, _maxAmountSpawning);
     }
 
     public float RandomSpeed()
