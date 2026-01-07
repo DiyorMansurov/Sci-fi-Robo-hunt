@@ -12,12 +12,12 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private Transform _endPoint;
 
     [SerializeField] private float _minimumSpeed = 5f;
-    [SerializeField] private float _maximumSpeed = 10f;
+    [SerializeField] private float _maximumSpeed = 12f;
 
     [SerializeField] private int _minAmountSpawning = 1;
-    [SerializeField] private int _maxAmountSpawning = 5;
+    [SerializeField] private int _maxAmountSpawning = 10;
 
-    [SerializeField] private int _enemiesLeft = 50;
+    [SerializeField] private int _enemiesLeft = 100;
 
     private float _timer;
 

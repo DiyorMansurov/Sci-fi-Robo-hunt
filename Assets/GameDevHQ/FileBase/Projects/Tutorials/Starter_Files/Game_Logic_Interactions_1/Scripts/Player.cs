@@ -2,10 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Cinemachine;
 
 public class Player : MonoBehaviour
 {
     private PlayerInputActions _input;
+    [SerializeField] private CinemachineVirtualCamera  _playerVirtualCamera;
+    [SerializeField] private CinemachineImpulseSource _impulse;
+
+    [SerializeField] private AudioSource _shoot_SFX;
+
     [SerializeField] private Camera _playerCamera;
     [SerializeField] private LayerMask _maskToHit;
 
@@ -15,7 +21,7 @@ public class Player : MonoBehaviour
        private bool isAiming;
 
     private int _scoreAmount = 0;
-    private int _ammoAmount = 10;
+    [SerializeField] private int _ammoAmount = 10;
     void Awake()
     {
         _input = new PlayerInputActions();
@@ -27,7 +33,7 @@ public class Player : MonoBehaviour
     }
 
     private void Start() {
-                UIManager.Instance.UpdateAmmo(_ammoAmount);
+        UIManager.Instance.UpdateAmmo(_ammoAmount);
 
     }
 
@@ -39,10 +45,21 @@ public class Player : MonoBehaviour
 
     private void ZoomAim()
     {
-        float targetFOV = isAiming ? _aimFOV : _normalFOV;
+        float targetFOV;
 
-        _playerCamera.fieldOfView = Mathf.Lerp(
-            _playerCamera.fieldOfView,
+        if (isAiming)
+        {
+            _impulse.m_ImpulseDefinition.m_AmplitudeGain = 0.1f;
+            targetFOV = _aimFOV;
+        }
+        else
+        {
+            _impulse.m_ImpulseDefinition.m_AmplitudeGain = 0.3f;
+            targetFOV = _normalFOV;
+        }
+
+        _playerVirtualCamera.m_Lens.FieldOfView = Mathf.Lerp(
+            _playerVirtualCamera.m_Lens.FieldOfView,
             targetFOV,
             Time.deltaTime * _zoomSpeed
         );
@@ -57,6 +74,9 @@ public class Player : MonoBehaviour
     private void Shoot_performed(InputAction.CallbackContext context)
     {
         if (_ammoAmount <= 0) return;
+
+        _impulse.GenerateImpulse(); 
+        _shoot_SFX.Play();
 
         _ammoAmount -= 1;
         UIManager.Instance.UpdateAmmo(_ammoAmount);

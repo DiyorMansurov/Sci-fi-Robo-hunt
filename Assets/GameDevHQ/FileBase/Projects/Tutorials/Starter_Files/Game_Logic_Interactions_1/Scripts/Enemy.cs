@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour
     }
 
     [SerializeField] private States _currentState = States.Running;
+    [SerializeField] private AudioSource _death_SFX;
 
     private NavMeshAgent _agent;
     private EnemyPool _pool;
@@ -120,6 +121,9 @@ public class Enemy : MonoBehaviour
         if (_isDead) return;
 
         _isDead = true;
+
+        _death_SFX.pitch = Random.Range(0.75f, 1.75f);
+        _death_SFX.Play();
 
         _agent.isStopped = true;
         _agent.enabled = false;
