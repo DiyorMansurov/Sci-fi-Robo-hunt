@@ -14,7 +14,7 @@ public class Destination : MonoBehaviour
             _enemiesSkipped += 1;
             UIManager.Instance.UpdateEnemies(_enemiesSkipped);
 
-            if (_enemiesSkipped >= 1)
+            if (_enemiesSkipped >= 5)
             {
                 GameManager.Instance.Ending("Too much enemies went past you", false);
             }

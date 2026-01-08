@@ -133,6 +133,10 @@ public class Player : MonoBehaviour
                     UIManager.Instance.UpdateScore(_scoreAmount);
 
                     AddAmmo();
+                } else if (hitObject.CompareTag("Barrier"))
+                {
+                    hit.collider.GetComponent<Barrier>().TakeDamage();
+                    AddAmmo();
                 }
         }                 
 

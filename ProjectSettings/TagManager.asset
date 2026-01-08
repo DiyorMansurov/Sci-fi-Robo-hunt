@@ -8,6 +8,7 @@ TagManager:
   - Sphere
   - Capsule
   - Enemy
+  - Barrier
   layers:
   - Default
   - TransparentFX

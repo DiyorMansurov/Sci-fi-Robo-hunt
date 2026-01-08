@@ -46248,8 +46248,8 @@ MonoBehaviour:
   _pool: {fileID: 2145656167}
   _startPoint: {fileID: 2081235515}
   _endPoint: {fileID: 287983924}
-  _minimumSpeed: 55
-  _maximumSpeed: 55
+  _minimumSpeed: 6
+  _maximumSpeed: 12
   _minAmountSpawning: 1
   _maxAmountSpawning: 10
 --- !u!4 &1936125611
