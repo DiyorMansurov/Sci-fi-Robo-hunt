@@ -13,6 +13,8 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] private States _currentState = States.Running;
     [SerializeField] private AudioSource _death_SFX;
+    private GameObject _player;
+    private Player _playerScript;
 
     
     [SerializeField] private GameObject _redLight;
@@ -34,7 +36,8 @@ public class Enemy : MonoBehaviour
         _agent = GetComponent<NavMeshAgent>();
         _animator = GetComponent<Animator>();
         _lookTarget = GameObject.Find("Player").GetComponent<Transform>();
-
+        _player = GameObject.Find("Player");
+        _playerScript = _player.GetComponent<Player>();
         
     }
 
@@ -94,7 +97,7 @@ public class Enemy : MonoBehaviour
 
         float distance = Vector3.Distance(this.transform.position, _coverPoint);
 
-        if (distance < 6f && !_hiddenAlready)
+        if (distance < 10f && !_hiddenAlready)
         {
             _agent.destination = _coverPoint;
             _currentState = States.Hiding;
@@ -150,7 +153,9 @@ public class Enemy : MonoBehaviour
     public void EnemyHit()
     {
         if (_isDead) return;
+        _playerScript.UpdateEnemyStats();
         _currentState = States.Death;
+
     }
 
     private void RotateTowardsTarget()

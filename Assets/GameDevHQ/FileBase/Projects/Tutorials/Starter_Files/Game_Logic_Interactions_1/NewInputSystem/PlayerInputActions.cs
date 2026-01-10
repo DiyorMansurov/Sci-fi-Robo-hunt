@@ -53,6 +53,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Toggle_Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""78621157-f35b-467e-bc23-7361d4ced213"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -88,6 +97,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Restart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7eff8afb-51aa-4490-8c6e-8b330ba9f3eb"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Toggle_Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -99,6 +119,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
         m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
         m_Player_Restart = m_Player.FindAction("Restart", throwIfNotFound: true);
+        m_Player_Toggle_Menu = m_Player.FindAction("Toggle_Menu", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -163,6 +184,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Shoot;
     private readonly InputAction m_Player_Zoom;
     private readonly InputAction m_Player_Restart;
+    private readonly InputAction m_Player_Toggle_Menu;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -170,6 +192,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
         public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
         public InputAction @Restart => m_Wrapper.m_Player_Restart;
+        public InputAction @Toggle_Menu => m_Wrapper.m_Player_Toggle_Menu;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -188,6 +211,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Restart.started += instance.OnRestart;
             @Restart.performed += instance.OnRestart;
             @Restart.canceled += instance.OnRestart;
+            @Toggle_Menu.started += instance.OnToggle_Menu;
+            @Toggle_Menu.performed += instance.OnToggle_Menu;
+            @Toggle_Menu.canceled += instance.OnToggle_Menu;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -201,6 +227,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Restart.started -= instance.OnRestart;
             @Restart.performed -= instance.OnRestart;
             @Restart.canceled -= instance.OnRestart;
+            @Toggle_Menu.started -= instance.OnToggle_Menu;
+            @Toggle_Menu.performed -= instance.OnToggle_Menu;
+            @Toggle_Menu.canceled -= instance.OnToggle_Menu;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -223,5 +252,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnShoot(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
         void OnRestart(InputAction.CallbackContext context);
+        void OnToggle_Menu(InputAction.CallbackContext context);
     }
 }

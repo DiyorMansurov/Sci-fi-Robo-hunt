@@ -65,7 +65,7 @@ public class Player : MonoBehaviour
     private void Zoom(InputAction.CallbackContext context)
     {
         isAiming = context.ReadValueAsButton();
-        Debug.Log("called");
+ 
     }
 
     private void ZoomAim()
@@ -101,9 +101,17 @@ public class Player : MonoBehaviour
         IsEnded = true;
     }
 
+    public void UpdateEnemyStats()
+    {
+        _scoreAmount += 50;
+        UIManager.Instance.UpdateScore(_scoreAmount);
+        UIManager.Instance.UpdateEnemiesKilled();
+    }
+
     private void Shoot_performed(InputAction.CallbackContext context)
     {
         if (IsEnded) return;
+        if (Time.timeScale == 0f) return;
 
         if (_ammoAmount <= 0)
         {
@@ -123,19 +131,24 @@ public class Player : MonoBehaviour
        if (Physics.Raycast(ray, out hit,  Mathf.Infinity, _maskToHit))
         {
                 var hitObject = hit.collider.gameObject;
-                Debug.Log(hitObject.name);
+
                 if (hitObject.CompareTag("Enemy"))
                 {
                     hit.collider.GetComponent<Enemy>().EnemyHit();
                     hitObject.tag = "Untagged";
-                    
-                    _scoreAmount += 50;
-                    UIManager.Instance.UpdateScore(_scoreAmount);
 
                     AddAmmo();
                 } else if (hitObject.CompareTag("Barrier"))
                 {
                     hit.collider.GetComponent<Barrier>().TakeDamage();
+                    AddAmmo();
+                    _scoreAmount += 5;
+                    UIManager.Instance.UpdateScore(_scoreAmount);
+                } else if (hitObject.CompareTag("Barrel"))
+                {
+                    hit.collider.GetComponent<ExplosiveBarrel>().TakeDamage();
+                    _scoreAmount += 25;
+                    UIManager.Instance.UpdateScore(_scoreAmount);
                     AddAmmo();
                 }
         }                 

@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
 {
     private int _ammoAmount = 0;
     private int _enemiesKilled = 0;
+    private int _enemiesSkipped = 0;
     private int _scoreAmount = 0;
     [SerializeField] private TMP_Text  _ammoText;
     [SerializeField] private TMP_Text  _enemiesText;
@@ -24,6 +25,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Image _sadImg;
     [SerializeField] private Image _happyImg;
 
+    [SerializeField] private GameObject _pauseMenu;
+
     private int Minutes;
     private int Seconds;
 
@@ -35,7 +38,7 @@ public class UIManager : MonoBehaviour
 
     private void Update() {
         _ammoText.text = _ammoAmount.ToString();
-        _enemiesText.text = _enemiesKilled.ToString();
+        _enemiesText.text = _enemiesSkipped.ToString();
         _scoreText.text = _scoreAmount.ToString();
     }
 
@@ -45,7 +48,11 @@ public class UIManager : MonoBehaviour
     }
     public void UpdateEnemies(int amount)
     {
-        _enemiesKilled = amount;
+        _enemiesSkipped = amount;
+    }
+    public void UpdateEnemiesKilled()
+    {
+        _enemiesKilled++;
     }
     public void UpdateScore(int amount)
     {
@@ -58,6 +65,11 @@ public class UIManager : MonoBehaviour
         Seconds = Mathf.FloorToInt(_timeRemaining % 60f);
 
         _timerText.text = $"{Minutes}:{Seconds:D2}";
+    }
+
+    public void TogglePauseMenu(bool IsPaused)
+    {
+        _pauseMenu.SetActive(IsPaused);
     }
 
     public void EndingUI(bool IsWin, string Reason)

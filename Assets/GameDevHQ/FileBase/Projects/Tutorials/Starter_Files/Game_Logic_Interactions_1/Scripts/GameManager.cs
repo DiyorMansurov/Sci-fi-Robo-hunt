@@ -23,17 +23,21 @@ public class GameManager : MonoBehaviour
 
         _input = new PlayerInputActions();
         _input.Player.Enable();
+
+        GamePause();
         
     }
 
     void OnEnable()
     {
         _input.Player.Restart.performed += Restart_performed;
+        _input.Player.Toggle_Menu.performed += context => GamePause();
     }
 
     void OnDisable()
     {
         _input.Player.Restart.performed -= Restart_performed;
+        _input.Player.Toggle_Menu.performed -= context => GamePause();
     }
 
     private void Restart_performed(InputAction.CallbackContext context)
@@ -67,6 +71,26 @@ public class GameManager : MonoBehaviour
                 Ending("Good job bro... or sis idk", true);
             }
         }
+    }
+
+    public void GamePause() {
+        
+        if (Time.timeScale == 1f)
+        {
+            Time.timeScale = 0f;
+            UIManager.Instance.TogglePauseMenu(true);
+            AudioListener.pause = true;
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            UIManager.Instance.TogglePauseMenu(false);
+            AudioListener.pause = false;
+        }
+    }
+
+    public void ExitGame() {
+        Application.Quit();
     }
 
     public void Ending(string message, bool IsWin)

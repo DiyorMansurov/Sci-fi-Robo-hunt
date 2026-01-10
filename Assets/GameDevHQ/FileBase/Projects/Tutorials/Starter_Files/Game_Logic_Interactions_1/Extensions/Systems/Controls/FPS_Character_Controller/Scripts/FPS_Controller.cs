@@ -52,14 +52,24 @@ namespace GameDevHQ.FileBase.Plugins.FPS_Character_Controller
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                Cursor.lockState = CursorLockMode.None;
-            }
-
+            SetCursor();
+            if (Time.timeScale == 0f)
+            return;
             FPSController();
             CameraController();
             HeadBobbing(); 
+        }
+
+        private void SetCursor()
+        {
+            if (Time.timeScale == 1f)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+            }
         }
 
         void FPSController()

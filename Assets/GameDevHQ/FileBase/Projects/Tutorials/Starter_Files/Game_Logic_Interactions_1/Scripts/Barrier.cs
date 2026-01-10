@@ -74,7 +74,7 @@ public class Barrier : MonoBehaviour
     {
         while (_barrierHP < 5)
         {
-            yield return new WaitForSeconds(4f);
+            yield return new WaitForSeconds(6f);
             _barrierHP++;
             if (_barrierHP > 1)
             {
