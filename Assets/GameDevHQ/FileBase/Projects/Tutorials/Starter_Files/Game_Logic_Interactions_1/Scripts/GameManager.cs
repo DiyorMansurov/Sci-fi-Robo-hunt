@@ -24,20 +24,22 @@ public class GameManager : MonoBehaviour
         _input = new PlayerInputActions();
         _input.Player.Enable();
 
-        GamePause();
-        
+
+        Time.timeScale = 0f;
+        UIManager.Instance.TogglePauseMenu(true);
+        AudioListener.pause = true;
     }
 
     void OnEnable()
     {
         _input.Player.Restart.performed += Restart_performed;
-        _input.Player.Toggle_Menu.performed += context => GamePause();
+        _input.Player.Toggle_Menu.performed += GamePause;
     }
 
     void OnDisable()
     {
         _input.Player.Restart.performed -= Restart_performed;
-        _input.Player.Toggle_Menu.performed -= context => GamePause();
+        _input.Player.Toggle_Menu.performed -= GamePause;
     }
 
     private void Restart_performed(InputAction.CallbackContext context)
@@ -73,8 +75,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void GamePause() {
-        
+    private void GamePause(InputAction.CallbackContext context) {
+        Debug.Log("Pause Toggled");
         if (Time.timeScale == 1f)
         {
             Time.timeScale = 0f;
@@ -87,6 +89,11 @@ public class GameManager : MonoBehaviour
             UIManager.Instance.TogglePauseMenu(false);
             AudioListener.pause = false;
         }
+    }
+
+    public void ButtonPlay()
+    {
+        GamePause(new InputAction.CallbackContext());
     }
 
     public void ExitGame() {

@@ -41,11 +41,13 @@ namespace GameDevHQ.FileBase.Plugins.FPS_Character_Controller
         [SerializeField][Tooltip("Control the look sensitivty of the camera")]
         private float _lookSensitivity = 5.0f; //mouse sensitivity 
 
-        private Camera _fpsCamera;
+        [SerializeField] private Camera _fpsCamera;
+
+        [SerializeField] private Transform _cameraPivot; // assign an empty pivot as LookAt target
+        private float _verticalRotation = 0f;
         private void Start()
         {
             _controller = GetComponent<CharacterController>(); //assign the reference variable to the component
-            _fpsCamera = GetComponentInChildren<Camera>();
             _initialCameraPos = _fpsCamera.transform.localPosition;
             Cursor.lockState = CursorLockMode.Locked;
         }
@@ -57,7 +59,7 @@ namespace GameDevHQ.FileBase.Plugins.FPS_Character_Controller
             return;
             FPSController();
             CameraController();
-            HeadBobbing(); 
+            // HeadBobbing(); 
         }
 
         private void SetCursor()
@@ -130,60 +132,69 @@ namespace GameDevHQ.FileBase.Plugins.FPS_Character_Controller
             float mouseX = Input.GetAxis("Mouse X"); //get mouse movement on the x
             float mouseY = Input.GetAxis("Mouse Y"); //get mouse movement on the y
 
-            Vector3 rot = transform.localEulerAngles; //store current rotation
-            rot.y += mouseX * _lookSensitivity; //add our mouseX movement to the y axis
-            transform.localRotation = Quaternion.AngleAxis(rot.y, Vector3.up); ////rotate along the y axis by movement amount
+            // Vector3 rot = transform.localEulerAngles; //store current rotation
+            // rot.y += mouseX * _lookSensitivity; //add our mouseX movement to the y axis
+            // transform.localRotation = Quaternion.AngleAxis(rot.y, Vector3.up); ////rotate along the y axis by movement amount
 
-            Vector3 camRot = _fpsCamera.transform.localEulerAngles; //store the current rotation
-            camRot.x += -mouseY * _lookSensitivity; //add the mouseY movement to the x axis
-            _fpsCamera.transform.localRotation = Quaternion.AngleAxis(camRot.x, Vector3.right); //rotate along the x axis by movement amount
+            transform.Rotate(Vector3.up * mouseX * _lookSensitivity);
+
+            
+            // Vertical rotation (pivot)
+            _verticalRotation -= mouseY * _lookSensitivity;
+            _verticalRotation = Mathf.Clamp(_verticalRotation, -80f, 80f); // prevent flipping
+
+            _cameraPivot.localRotation = Quaternion.Euler(_verticalRotation, 0f, 0f);
+
+            // Vector3 camRot = _fpsCamera.transform.localEulerAngles; //store the current rotation
+            // camRot.x += -mouseY * _lookSensitivity; //add the mouseY movement to the x axis
+            // _fpsCamera.transform.localRotation = Quaternion.AngleAxis(camRot.x, Vector3.right); //rotate along the x axis by movement amount
         }
 
-        void HeadBobbing()
-        {
-            float h = Input.GetAxis("Horizontal"); //horizontal inputs (a, d, leftarrow, rightarrow)
-            float v = Input.GetAxis("Vertical"); //veritical inputs (w, s, uparrow, downarrow)
+        // void HeadBobbing()
+        // {
+        //     float h = Input.GetAxis("Horizontal"); //horizontal inputs (a, d, leftarrow, rightarrow)
+        //     float v = Input.GetAxis("Vertical"); //veritical inputs (w, s, uparrow, downarrow)
 
-            if (h != 0 || v != 0) //Are we moving?
-            {
+        //     if (h != 0 || v != 0) //Are we moving?
+        //     {
                
-                if (Input.GetKey(KeyCode.LeftShift)) //check if running
-                {
-                    _timer += _runFrequency * Time.deltaTime; //increment timer for our sin/cos waves when running
-                }
-                else
-                {
-                    _timer += _walkFrequency * Time.deltaTime; //increment timer for our sin/cos waves when walking
-                }
+        //         if (Input.GetKey(KeyCode.LeftShift)) //check if running
+        //         {
+        //             _timer += _runFrequency * Time.deltaTime; //increment timer for our sin/cos waves when running
+        //         }
+        //         else
+        //         {
+        //             _timer += _walkFrequency * Time.deltaTime; //increment timer for our sin/cos waves when walking
+        //         }
 
-                Vector3 headPosition = new Vector3 //calculate the head position in our walk cycle
-                    (
-                        _initialCameraPos.x + Mathf.Cos(_timer) * _heightOffset, //x value
-                        _initialCameraPos.y + Mathf.Sin(_timer) * _heightOffset, //y value
-                        0 // z value
-                    );
+        //         Vector3 headPosition = new Vector3 //calculate the head position in our walk cycle
+        //             (
+        //                 _initialCameraPos.x + Mathf.Cos(_timer) * _heightOffset, //x value
+        //                 _initialCameraPos.y + Mathf.Sin(_timer) * _heightOffset, //y value
+        //                 0 // z value
+        //             );
 
-                _fpsCamera.transform.localPosition = headPosition; //assign the head position
+        //         _fpsCamera.transform.localPosition = headPosition; //assign the head position
 
-                if (_timer > Mathf.PI * 2) //reset the timer when we complete a full walk cycle on the unit circle
-                {
-                    _timer = 0; //completed walk cycle. Reset. 
-                }
-            }
-            else
-            {
-                _timer = Mathf.PI / 2; //reset timer back to 1 for initial walk cycle 
+        //         if (_timer > Mathf.PI * 2) //reset the timer when we complete a full walk cycle on the unit circle
+        //         {
+        //             _timer = 0; //completed walk cycle. Reset. 
+        //         }
+        //     }
+        //     else
+        //     {
+        //         _timer = Mathf.PI / 2; //reset timer back to 1 for initial walk cycle 
 
-                Vector3 resetHead = new Vector3 //calculate reset head position back to initial cam pos
-                    (
-                    Mathf.Lerp(_fpsCamera.transform.localPosition.x, _initialCameraPos.x, _smooth * Time.deltaTime), //x vlaue
-                    Mathf.Lerp(_fpsCamera.transform.localPosition.y, _initialCameraPos.y, _smooth * Time.deltaTime), //y value
-                    0 //z value
-                    );
+        //         Vector3 resetHead = new Vector3 //calculate reset head position back to initial cam pos
+        //             (
+        //             Mathf.Lerp(_fpsCamera.transform.localPosition.x, _initialCameraPos.x, _smooth * Time.deltaTime), //x vlaue
+        //             Mathf.Lerp(_fpsCamera.transform.localPosition.y, _initialCameraPos.y, _smooth * Time.deltaTime), //y value
+        //             0 //z value
+        //             );
 
-                _fpsCamera.transform.localPosition = resetHead; //assign the head position back to the initial cam pos
-            }
-        }
+        //         _fpsCamera.transform.localPosition = resetHead; //assign the head position back to the initial cam pos
+        //     }
+        // }
     }
 }
 

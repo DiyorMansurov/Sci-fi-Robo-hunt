@@ -16,7 +16,8 @@ public class Player : MonoBehaviour
     [SerializeField] private AudioClip _lose_SFX;
     [SerializeField] private AudioClip _win_SFX;
 
-    [SerializeField] private Camera _playerCamera;
+    private Camera _playerCamera;
+    [SerializeField] private Transform _cameraPivot;
     [SerializeField] private LayerMask _maskToHit;
 
     [SerializeField] private float _normalFOV = 55f;
@@ -52,6 +53,13 @@ public class Player : MonoBehaviour
 
     private void Start() {
         UIManager.Instance.UpdateAmmo(_ammoAmount);
+
+        var brain = FindObjectOfType<CinemachineBrain>();
+        
+        if (brain != null)
+            _playerCamera = brain.GetComponent<Camera>();
+        else
+            Debug.LogError("No CinemachineBrain found!");
 
     }
 
@@ -125,7 +133,7 @@ public class Player : MonoBehaviour
 
         UIManager.Instance.UpdateAmmo(_ammoAmount);
 
-       Ray ray = _playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f));
+       Ray ray = new Ray(_playerCamera.transform.position, _playerCamera.transform.forward);
        RaycastHit hit;
 
        if (Physics.Raycast(ray, out hit,  Mathf.Infinity, _maskToHit))
@@ -153,6 +161,15 @@ public class Player : MonoBehaviour
                 }
         }                 
 
+    }
+
+    private void OnDrawGizmos() {
+        Gizmos.color = Color.red;
+        if (_playerCamera != null)
+        {
+            Gizmos.DrawRay(_playerCamera.transform.position, _playerCamera.transform.forward * 100f);
+        }
+        
     }
 
     
